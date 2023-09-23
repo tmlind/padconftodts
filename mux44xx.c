@@ -18,6 +18,10 @@
  * published by the Free Software Foundation.
  */
 
+#include <errno.h>
+#include <stdio.h>
+#include <stdint.h>
+
 #include "mux.h"
 
 #define _OMAP4_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)	\
@@ -1291,18 +1295,18 @@ int omap4_mux_init(struct omap_board_mux *board_subset,
 
 	switch (flags & OMAP_PACKAGE_MASK) {
 	case OMAP_PACKAGE_CBL:
-		pr_debug("%s: OMAP4430 ES1.0 -> OMAP_PACKAGE_CBL\n", __func__);
+		printf("%s: OMAP4430 ES1.0 -> OMAP_PACKAGE_CBL\n", __func__);
 		package_balls_core = omap4_core_cbl_ball;
 		core_muxmodes = omap4_core_muxmodes;
 		break;
 	case OMAP_PACKAGE_CBS:
-		pr_debug("%s: OMAP4430 ES2.X -> OMAP_PACKAGE_CBS\n", __func__);
+		printf("%s: OMAP4430 ES2.X -> OMAP_PACKAGE_CBS\n", __func__);
 		package_balls_core = omap4_core_cbs_ball;
 		core_muxmodes = omap4_core_muxmodes;
 		core_subset = omap4_es2_core_subset;
 		break;
 	default:
-		pr_err("%s: Unknown omap package, mux disabled\n", __func__);
+		printf("%s: Unknown omap package, mux disabled\n", __func__);
 		return -EINVAL;
 	}
 

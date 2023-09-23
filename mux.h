@@ -101,10 +101,10 @@
  * @balls:	available balls on the package
  */
 struct omap_mux {
-	u16	reg_offset;
-	u16	gpio;
-	char	*muxnames[OMAP_MUX_NR_MODES];
-	char	*balls[OMAP_MUX_NR_SIDES];
+	uint16_t	reg_offset;
+	uint16_t	gpio;
+	char		*muxnames[OMAP_MUX_NR_MODES];
+	char		*balls[OMAP_MUX_NR_SIDES];
 };
 
 /**
@@ -113,8 +113,8 @@ struct omap_mux {
  * @balls:	available balls on the package
  */
 struct omap_ball {
-	u16	reg_offset;
-	char	*balls[OMAP_MUX_NR_SIDES];
+	uint16_t	reg_offset;
+	char		*balls[OMAP_MUX_NR_SIDES];
 };
 
 /**
@@ -123,8 +123,8 @@ struct omap_ball {
  * @mux_value:	desired mux value to set
  */
 struct omap_board_mux {
-	u16	reg_offset;
-	u16	value;
+	uint16_t	reg_offset;
+	uint16_t	value;
 };
 
 /**
@@ -160,8 +160,8 @@ int omap4_mux_init(struct omap_board_mux *board_subset,
 /**
  * omap_mux_init - private mux init function, do not call
  */
-int omap_mux_init(const char *name, u32 flags,
-		  u32 mux_pbase, u32 mux_size,
+int omap_mux_init(const char *name, uint32_t flags,
+		  uint32_t mux_pbase, uint32_t mux_size,
 		  struct omap_mux *superset,
 		  struct omap_mux *package_subset,
 		  struct omap_board_mux *board_mux,

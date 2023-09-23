@@ -7,6 +7,10 @@
  * published by the Free Software Foundation.
  */
 
+#include <errno.h>
+#include <stdint.h>
+#include <stdio.h>
+
 #include "mux.h"
 
 #define _OMAP2420_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
@@ -659,7 +663,7 @@ int omap2420_mux_init(struct omap_board_mux *board_subset, int flags)
 	case OMAP_PACKAGE_ZAF:
 		/* REVISIT: Please add data */
 	default:
-		pr_warning("%s: No ball data available for omap2420 package\n",
+		printf("%s: No ball data available for omap2420 package\n",
 				__func__);
 	}
 
