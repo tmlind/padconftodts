@@ -7,12 +7,7 @@
  * published by the Free Software Foundation.
  */
 
-#include <linux/module.h>
-#include <linux/init.h>
-
 #include "mux.h"
-
-#ifdef CONFIG_OMAP_MUX
 
 #define _OMAP2430_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
 {									\
@@ -20,16 +15,6 @@
 	.gpio		= (g),						\
 	.muxnames	= { m0, m1, m2, m3, m4, m5, m6, m7 },		\
 }
-
-#else
-
-#define _OMAP2430_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
-{									\
-	.reg_offset	= (OMAP2430_CONTROL_PADCONF_##M0##_OFFSET),	\
-	.gpio		= (g),						\
-}
-
-#endif
 
 #define _OMAP2430_BALLENTRY(M0, bb, bt)					\
 {									\
@@ -40,7 +25,7 @@
 /*
  * Superset of all mux modes for omap2430
  */
-static struct omap_mux __initdata omap2430_muxmodes[] = {
+static struct omap_mux omap2430_muxmodes[] = {
 	_OMAP2430_MUXENTRY(CAM_D0, 133,
 		"cam_d0", "hw_dbg0", "sti_dout", "gpio_133",
 		NULL, NULL, "etk_d2", "safe_mode"),
@@ -585,8 +570,7 @@ static struct omap_mux __initdata omap2430_muxmodes[] = {
  * Balls for POP package
  * 447-pin s-PBGA Package, 0.00mm Ball Pitch (Bottom)
  */
-#ifdef CONFIG_DEBUG_FS
-static struct omap_ball __initdata omap2430_pop_ball[] = {
+static struct omap_ball omap2430_pop_ball[] = {
 	_OMAP2430_BALLENTRY(CAM_D0, "t8", NULL),
 	_OMAP2430_BALLENTRY(CAM_D1, "t4", NULL),
 	_OMAP2430_BALLENTRY(CAM_D10, "r4", NULL),
@@ -768,11 +752,8 @@ static struct omap_ball __initdata omap2430_pop_ball[] = {
 	_OMAP2430_BALLENTRY(USB0HS_STP, "ae5", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap2430_pop_ball	 NULL
-#endif
 
-int __init omap2430_mux_init(struct omap_board_mux *board_subset, int flags)
+int omap2430_mux_init(struct omap_board_mux *board_subset, int flags)
 {
 	struct omap_ball *package_balls = NULL;
 

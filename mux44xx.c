@@ -17,12 +17,8 @@
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
  */
-#include <linux/module.h>
-#include <linux/init.h>
 
 #include "mux.h"
-
-#ifdef CONFIG_OMAP_MUX
 
 #define _OMAP4_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)	\
 {									\
@@ -30,16 +26,6 @@
 	.gpio		= (g),						\
 	.muxnames	= { m0, m1, m2, m3, m4, m5, m6, m7 },		\
 }
-
-#else
-
-#define _OMAP4_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)	\
-{									\
-	.reg_offset	= (OMAP4_CTRL_MODULE_PAD_##M0##_OFFSET),	\
-	.gpio		= (g),						\
-}
-
-#endif
 
 #define _OMAP4_BALLENTRY(M0, bb, bt)				\
 {									\
@@ -50,7 +36,7 @@
 /*
  * Superset of all mux modes for omap4 ES1.0
  */
-static struct omap_mux __initdata omap4_core_muxmodes[] = {
+static struct omap_mux omap4_core_muxmodes[] = {
 	_OMAP4_MUXENTRY(GPMC_AD0, 0, "gpmc_ad0", "sdmmc2_dat0", NULL, NULL,
 			NULL, NULL, NULL, NULL),
 	_OMAP4_MUXENTRY(GPMC_AD1, 0, "gpmc_ad1", "sdmmc2_dat1", NULL, NULL,
@@ -542,9 +528,7 @@ static struct omap_mux __initdata omap4_core_muxmodes[] = {
  * 547-pin CBL ES1.0 S-FPGA-N547, 0.40mm Ball Pitch (Top),
  *				  0.40mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined(CONFIG_OMAP_PACKAGE_CBL)
-static struct omap_ball __initdata omap4_core_cbl_ball[] = {
+static struct omap_ball omap4_core_cbl_ball[] = {
 	_OMAP4_BALLENTRY(GPMC_AD0, "c12", NULL),
 	_OMAP4_BALLENTRY(GPMC_AD1, "d12", NULL),
 	_OMAP4_BALLENTRY(GPMC_AD2, "c13", NULL),
@@ -750,14 +734,11 @@ static struct omap_ball __initdata omap4_core_cbl_ball[] = {
 	_OMAP4_BALLENTRY(DPM_EMU19, "ac4", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap4_core_cbl_ball  NULL
-#endif
 
 /*
  * Signals different on ES2.0 compared to superset
  */
-static struct omap_mux __initdata omap4_es2_core_subset[] = {
+static struct omap_mux omap4_es2_core_subset[] = {
 	_OMAP4_MUXENTRY(GPMC_AD8, 32, "gpmc_ad8", "kpd_row0", "c2c_data15",
 			"gpio_32", NULL, "sdmmc1_dat0", NULL, NULL),
 	_OMAP4_MUXENTRY(GPMC_AD9, 33, "gpmc_ad9", "kpd_row1", "c2c_data14",
@@ -988,9 +969,7 @@ static struct omap_mux __initdata omap4_es2_core_subset[] = {
  * 547-pin CBL ES2.0 S-FPGA-N547, 0.40mm Ball Pitch (Top),
  *				  0.40mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined(CONFIG_OMAP_PACKAGE_CBS)
-static struct omap_ball __initdata omap4_core_cbs_ball[] = {
+static struct omap_ball omap4_core_cbs_ball[] = {
 	_OMAP4_BALLENTRY(GPMC_AD0, "c12", NULL),
 	_OMAP4_BALLENTRY(GPMC_AD1, "d12", NULL),
 	_OMAP4_BALLENTRY(GPMC_AD2, "c13", NULL),
@@ -1196,14 +1175,11 @@ static struct omap_ball __initdata omap4_core_cbs_ball[] = {
 	_OMAP4_BALLENTRY(DPM_EMU19, "ac4", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap4_core_cbs_ball  NULL
-#endif
 
 /*
  * Superset of all mux modes for omap4
  */
-static struct omap_mux __initdata omap4_wkup_muxmodes[] = {
+static struct omap_mux omap4_wkup_muxmodes[] = {
 	_OMAP4_MUXENTRY(SIM_IO, 0, "sim_io", NULL, NULL, "gpio_wk0", NULL,
 			NULL, NULL, "safe_mode"),
 	_OMAP4_MUXENTRY(SIM_CLK, 1, "sim_clk", NULL, NULL, "gpio_wk1", NULL,
@@ -1272,9 +1248,7 @@ static struct omap_mux __initdata omap4_wkup_muxmodes[] = {
  * 547-pin CBL ES1.0 S-FPGA-N547, 0.40mm Ball Pitch (Top),
  *				  0.40mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined(CONFIG_OMAP_PACKAGE_CBL)
-static struct omap_ball __initdata omap4_wkup_cbl_cbs_ball[] = {
+static struct omap_ball omap4_wkup_cbl_cbs_ball[] = {
 	_OMAP4_BALLENTRY(SIM_IO, "h4", NULL),
 	_OMAP4_BALLENTRY(SIM_CLK, "j2", NULL),
 	_OMAP4_BALLENTRY(SIM_RESET, "g2", NULL),
@@ -1305,11 +1279,8 @@ static struct omap_ball __initdata omap4_wkup_cbl_cbs_ball[] = {
 	_OMAP4_BALLENTRY(JTAG_TDO, "ae2", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap4_wkup_cbl_cbs_ball  NULL
-#endif
 
-int __init omap4_mux_init(struct omap_board_mux *board_subset,
+int omap4_mux_init(struct omap_board_mux *board_subset,
 	struct omap_board_mux *board_wkup_subset, int flags)
 {
 	struct omap_ball *package_balls_core;

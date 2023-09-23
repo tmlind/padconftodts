@@ -7,12 +7,7 @@
  * published by the Free Software Foundation.
  */
 
-#include <linux/module.h>
-#include <linux/init.h>
-
 #include "mux.h"
-
-#ifdef CONFIG_OMAP_MUX
 
 #define _OMAP2420_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
 {									\
@@ -20,16 +15,6 @@
 	.gpio		= (g),						\
 	.muxnames	= { m0, m1, m2, m3, m4, m5, m6, m7 },		\
 }
-
-#else
-
-#define _OMAP2420_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
-{									\
-	.reg_offset	= (OMAP2420_CONTROL_PADCONF_##M0##_OFFSET),	\
-	.gpio		= (g),						\
-}
-
-#endif
 
 #define _OMAP2420_BALLENTRY(M0, bb, bt)					\
 {									\
@@ -40,7 +25,7 @@
 /*
  * Superset of all mux modes for omap2420
  */
-static struct omap_mux __initdata omap2420_muxmodes[] = {
+static struct omap_mux omap2420_muxmodes[] = {
 	_OMAP2420_MUXENTRY(CAM_D0, 54,
 		"cam_d0", "hw_dbg2", "sti_dout", "gpio_54",
 		NULL, NULL, "etk_d2", NULL),
@@ -506,8 +491,7 @@ static struct omap_mux __initdata omap2420_muxmodes[] = {
 /*
  * Balls for 447-pin POP package
  */
-#ifdef CONFIG_DEBUG_FS
-static struct omap_ball __initdata omap2420_pop_ball[] = {
+static struct omap_ball omap2420_pop_ball[] = {
 	_OMAP2420_BALLENTRY(CAM_D0, "y4", NULL),
 	_OMAP2420_BALLENTRY(CAM_D1, "y3", NULL),
 	_OMAP2420_BALLENTRY(CAM_D2, "u7", NULL),
@@ -663,11 +647,8 @@ static struct omap_ball __initdata omap2420_pop_ball[] = {
 	_OMAP2420_BALLENTRY(VLYNQ_TX1, "w14", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap2420_pop_ball	 NULL
-#endif
 
-int __init omap2420_mux_init(struct omap_board_mux *board_subset, int flags)
+int omap2420_mux_init(struct omap_board_mux *board_subset, int flags)
 {
 	struct omap_ball *package_balls = NULL;
 

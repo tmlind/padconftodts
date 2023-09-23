@@ -7,12 +7,7 @@
  * published by the Free Software Foundation.
  */
 
-#include <linux/module.h>
-#include <linux/init.h>
-
 #include "mux.h"
-
-#ifdef CONFIG_OMAP_MUX
 
 #define _OMAP3_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
 {									\
@@ -20,16 +15,6 @@
 	.gpio		= (g),						\
 	.muxnames	= { m0, m1, m2, m3, m4, m5, m6, m7 },		\
 }
-
-#else
-
-#define _OMAP3_MUXENTRY(M0, g, m0, m1, m2, m3, m4, m5, m6, m7)		\
-{									\
-	.reg_offset	= (OMAP3_CONTROL_PADCONF_##M0##_OFFSET),	\
-	.gpio		= (g),						\
-}
-
-#endif
 
 #define _OMAP3_BALLENTRY(M0, bb, bt)					\
 {									\
@@ -40,7 +25,7 @@
 /*
  * Superset of all mux modes for omap3
  */
-static struct omap_mux __initdata omap3_muxmodes[] = {
+static struct omap_mux omap3_muxmodes[] = {
 	_OMAP3_MUXENTRY(CAM_D0, 99,
 		"cam_d0", NULL, NULL, NULL,
 		"gpio_99", NULL, NULL, "safe_mode"),
@@ -702,13 +687,9 @@ static struct omap_mux __initdata omap3_muxmodes[] = {
 /*
  * Signals different on CBC package compared to the superset
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_OMAP_PACKAGE_CBC)
-static struct omap_mux __initdata omap3_cbc_subset[] = {
+static struct omap_mux omap3_cbc_subset[] = {
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cbc_subset	NULL
-#endif
 
 /*
  * Balls for CBC package
@@ -719,9 +700,7 @@ static struct omap_mux __initdata omap3_cbc_subset[] = {
  * http://wiki.davincidsp.com/index.php/Datasheet_Errata_for_OMAP35x_CBC_Package
  * http://community.ti.com/forums/t/10982.aspx
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)	\
-		&& defined(CONFIG_OMAP_PACKAGE_CBC)
-static struct omap_ball __initdata omap3_cbc_ball[] = {
+static struct omap_ball omap3_cbc_ball[] = {
 	_OMAP3_BALLENTRY(CAM_D0, "ae16", NULL),
 	_OMAP3_BALLENTRY(CAM_D1, "ae15", NULL),
 	_OMAP3_BALLENTRY(CAM_D10, "d25", NULL),
@@ -923,15 +902,11 @@ static struct omap_ball __initdata omap3_cbc_ball[] = {
 	_OMAP3_BALLENTRY(UART3_TX_IRTX, "g24", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cbc_ball	 NULL
-#endif
 
 /*
  * Signals different on CUS package compared to superset
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_OMAP_PACKAGE_CUS)
-static struct omap_mux __initdata omap3_cus_subset[] = {
+static struct omap_mux omap3_cus_subset[] = {
 	_OMAP3_MUXENTRY(CAM_D10, 109,
 		"cam_d10", NULL, NULL, NULL,
 		"gpio_109", NULL, NULL, "safe_mode"),
@@ -1067,17 +1042,12 @@ static struct omap_mux __initdata omap3_cus_subset[] = {
 		"gpio_150", NULL, NULL, "safe_mode"),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cus_subset	NULL
-#endif
 
 /*
  * Balls for CUS package
  * 423-pin s-PBGA Package, 0.65mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined(CONFIG_OMAP_PACKAGE_CUS)
-static struct omap_ball __initdata omap3_cus_ball[] = {
+static struct omap_ball omap3_cus_ball[] = {
 	_OMAP3_BALLENTRY(CAM_D0, "ab18", NULL),
 	_OMAP3_BALLENTRY(CAM_D1, "ac18", NULL),
 	_OMAP3_BALLENTRY(CAM_D10, "f21", NULL),
@@ -1261,15 +1231,11 @@ static struct omap_ball __initdata omap3_cus_ball[] = {
 	_OMAP3_BALLENTRY(UART3_TX_IRTX, "c23", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cus_ball	 NULL
-#endif
 
 /*
  * Signals different on CBB package compared to superset
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_OMAP_PACKAGE_CBB)
-static struct omap_mux __initdata omap3_cbb_subset[] = {
+static struct omap_mux omap3_cbb_subset[] = {
 	_OMAP3_MUXENTRY(CAM_D10, 109,
 		"cam_d10", NULL, NULL, NULL,
 		"gpio_109", NULL, NULL, "safe_mode"),
@@ -1380,17 +1346,12 @@ static struct omap_mux __initdata omap3_cbb_subset[] = {
 		"gpio_23", "mm1_rxdm", "hsusb1_tll_nxt", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cbb_subset	NULL
-#endif
 
 /*
  * Balls for CBB package
  * 515-pin s-PBGA Package, 0.50mm Ball Pitch (Top), 0.40mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined(CONFIG_OMAP_PACKAGE_CBB)
-static struct omap_ball __initdata omap3_cbb_ball[] = {
+static struct omap_ball omap3_cbb_ball[] = {
 	_OMAP3_BALLENTRY(CAM_D0, "ag17", NULL),
 	_OMAP3_BALLENTRY(CAM_D1, "ah17", NULL),
 	_OMAP3_BALLENTRY(CAM_D10, "b25", NULL),
@@ -1592,15 +1553,11 @@ static struct omap_ball __initdata omap3_cbb_ball[] = {
 	_OMAP3_BALLENTRY(UART3_TX_IRTX, "h21", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap3_cbb_ball	 NULL
-#endif
 
 /*
  * Signals different on 36XX CBP package compared to 34XX CBC package
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_OMAP_PACKAGE_CBP)
-static struct omap_mux __initdata omap36xx_cbp_subset[] = {
+static struct omap_mux omap36xx_cbp_subset[] = {
 	_OMAP3_MUXENTRY(CAM_D0, 99,
 		"cam_d0", NULL, "csi2_dx2", NULL,
 		"gpio_99", NULL, NULL, "safe_mode"),
@@ -1808,17 +1765,12 @@ static struct omap_mux __initdata omap36xx_cbp_subset[] = {
 		"gpio_148", NULL, NULL, "safe_mode"),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap36xx_cbp_subset	NULL
-#endif
 
 /*
  * Balls for 36XX CBP package
  * 515-pin s-PBGA Package, 0.50mm Ball Pitch (Top), 0.40mm Ball Pitch (Bottom)
  */
-#if defined(CONFIG_OMAP_MUX) && defined(CONFIG_DEBUG_FS)		\
-		&& defined (CONFIG_OMAP_PACKAGE_CBP)
-static struct omap_ball __initdata omap36xx_cbp_ball[] = {
+static struct omap_ball omap36xx_cbp_ball[] = {
 	_OMAP3_BALLENTRY(CAM_D0, "ag17", NULL),
 	_OMAP3_BALLENTRY(CAM_D1, "ah17", NULL),
 	_OMAP3_BALLENTRY(CAM_D10, "b25", NULL),
@@ -2022,11 +1974,8 @@ static struct omap_ball __initdata omap36xx_cbp_ball[] = {
 	_OMAP3_BALLENTRY(UART3_TX_IRTX, "h21", NULL),
 	{ .reg_offset = OMAP_MUX_TERMINATOR },
 };
-#else
-#define omap36xx_cbp_ball	 NULL
-#endif
 
-int __init omap3_mux_init(struct omap_board_mux *board_subset, int flags)
+int omap3_mux_init(struct omap_board_mux *board_subset, int flags)
 {
 	struct omap_mux *package_subset;
 	struct omap_ball *package_balls;
